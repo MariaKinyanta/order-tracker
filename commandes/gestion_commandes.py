@@ -1,13 +1,16 @@
-# commandes/gestion_commandes.py
-
 import csv
 import os
 
 CSV_FILE = 'commandes.csv'
 
-def ajouter_commande(nom: str, produit: str) -> None:
-    nouveau_fichier = not os.path.exists(CSV_FILE)
+from commandes.gestion_stock import verifier_et_reduire_stock
 
+def ajouter_commande(nom: str, produit: str) -> None:
+    if not verifier_et_reduire_stock(produit):
+        print("❌ Commande annulée car produit indisponible.")
+        return
+
+    nouveau_fichier = not os.path.exists(CSV_FILE)
     with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         if nouveau_fichier:
@@ -15,6 +18,7 @@ def ajouter_commande(nom: str, produit: str) -> None:
         writer.writerow([nom, produit])
 
     print(f"✅ Commande de « {produit} » pour « {nom} » enregistrée.")
+
 
 def lister_commandes() -> None:
     if not os.path.exists(CSV_FILE):
