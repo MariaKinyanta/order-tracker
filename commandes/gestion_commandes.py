@@ -1,6 +1,7 @@
 import csv
 import os
 from .gestion_stock import verifier_et_reduire_stock 
+from .gestion_stock import verifier_et_reduire_stock, produit_existe
 
 CSV_FILE = 'commandes.csv'
 
@@ -9,8 +10,12 @@ from commandes.gestion_stock import verifier_et_reduire_stock
 
 def ajouter_commande(nom, produit):
    
+    if not produit_existe(produit):
+        print(f"❌ Le produit '{produit}' n'existe pas dans le stock.")
+        return
+
     if not verifier_et_reduire_stock(produit):
-        return  # 
+        return  # Stock insuffisant
 
     fichier_existe = os.path.exists(COMMANDES_FILE)
     with open(COMMANDES_FILE, mode='a', newline='', encoding='utf-8') as f:
