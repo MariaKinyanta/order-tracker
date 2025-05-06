@@ -1,12 +1,11 @@
-# main.py
-
-from commandes.gestion_commandes import ajouter_commande, lister_commandes
+from commandes.gestion_stock import afficher_stock  # Ajoute cette ligne
 
 def main():
     print("=== Order Tracker ===")
     print("1. Ajouter une commande")
     print("2. Lister les commandes")
-    choix = input("Choix (1 ou 2) : ").strip()
+    print("3. Afficher le stock disponible")  # Ajoute cette ligne
+    choix = input("Choix (1, 2 ou 3) : ").strip()
 
     if choix == '1':
         nom = input("Nom du client : ").strip()
@@ -19,8 +18,11 @@ def main():
     elif choix == '2':
         lister_commandes()
 
+    elif choix == '3':  
+        afficher_stock()
+
     else:
-        print("⚠️  Choix invalide. Veuillez saisir 1 ou 2.")
+        print("⚠️  Choix invalide. Veuillez saisir 1, 2 ou 3.")
 
 if __name__ == "__main__":
     main()
