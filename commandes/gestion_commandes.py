@@ -1,23 +1,25 @@
 import csv
 import os
+from .gestion_stock import verifier_et_reduire_stock 
 
 CSV_FILE = 'commandes.csv'
 
+
 from commandes.gestion_stock import verifier_et_reduire_stock
 
-def ajouter_commande(nom: str, produit: str) -> None:
+def ajouter_commande(nom, produit):
+   
     if not verifier_et_reduire_stock(produit):
-        print("❌ Commande annulée car produit indisponible.")
-        return
+        return  # 
 
-    nouveau_fichier = not os.path.exists(CSV_FILE)
-    with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
+    fichier_existe = os.path.exists(COMMANDES_FILE)
+    with open(COMMANDES_FILE, mode='a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        if nouveau_fichier:
-            writer.writerow(['Nom client', 'Produit commandé'])
-        writer.writerow([nom, produit])
-
-    print(f"✅ Commande de « {produit} » pour « {nom} » enregistrée.")
+        if not fichier_existe:
+            writer.writerow(["Nom", "Produit", "Date"])
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        writer.writerow([nom, produit, date])
+    print("✅ Commande ajoutée.")
 
 
 def lister_commandes() -> None:
