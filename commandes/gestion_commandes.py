@@ -3,15 +3,9 @@
 import csv
 import os
 
-# Nom du fichier CSV
 CSV_FILE = 'commandes.csv'
 
 def ajouter_commande(nom: str, produit: str) -> None:
-    """
-    Ajoute une ligne (Nom, Produit) dans le fichier commandes.csv.
-    Crée l’en-tête si le fichier n’existait pas.
-    """
-    # Vérifier si le fichier existe déjà
     nouveau_fichier = not os.path.exists(CSV_FILE)
 
     with open(CSV_FILE, mode='a', newline='', encoding='utf-8') as f:
@@ -21,3 +15,23 @@ def ajouter_commande(nom: str, produit: str) -> None:
         writer.writerow([nom, produit])
 
     print(f"✅ Commande de « {produit} » pour « {nom} » enregistrée.")
+
+def lister_commandes() -> None:
+    if not os.path.exists(CSV_FILE):
+        print("⚠️  Aucune commande trouvée (fichier inexistant).")
+        return
+
+    with open(CSV_FILE, mode='r', newline='', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        lignes = list(reader)
+
+    if len(lignes) <= 1:
+        print("⚠️  Le fichier ne contient pas de commande.")
+        return
+
+    entete, *data = lignes
+    print(f"\n{entete[0]:<20} | {entete[1]}")
+    print("-" * 40)
+    for nom, produit in data:
+        print(f"{nom:<20} | {produit}")
+    print(f"\n📋 {len(data)} commande(s) trouvée(s).")
