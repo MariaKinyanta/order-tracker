@@ -4,7 +4,6 @@ import os
 STOCK_FILE = 'stock.csv'
 
 def charger_stock():
-   
     stock = {}
     if not os.path.exists(STOCK_FILE):
         return stock
@@ -19,7 +18,6 @@ def charger_stock():
     return stock
 
 def sauvegarder_stock(stock):
-  
     with open(STOCK_FILE, mode='w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(["Produit", "Quantité"])
@@ -27,21 +25,15 @@ def sauvegarder_stock(stock):
             writer.writerow([produit, quantite])
 
 def verifier_et_reduire_stock(produit):
- 
     stock = charger_stock()
-
     if stock.get(produit, 0) <= 0:
         print(f"❌ Stock insuffisant pour le produit : {produit}")
         return False
-
     stock[produit] -= 1
     sauvegarder_stock(stock)
     return True
+
 def lire_stock():
-    """
-    Lit le stock actuel depuis le fichier CSV.
-    Renvoie un dictionnaire {produit: quantité}.
-    """
     stock = {}
     if not os.path.exists(STOCK_FILE):
         return stock
@@ -54,9 +46,7 @@ def lire_stock():
             stock[produit] = quantite
     return stock
 
-
 def afficher_stock():
-
     stock = lire_stock()
     if not stock:
         print("⚠️  Aucun stock trouvé.")
@@ -72,3 +62,10 @@ def afficher_stock():
 def produit_existe(produit):
     stock = charger_stock()
     return produit in stock
+def normaliser_nom_produit(produit):
+    stock = lire_stock()
+    for nom_stock in stock:
+        if nom_stock.lower() == produit.lower():
+            print("Produit lowercase trouvé :", nom_stock)
+            return nom_stock  
+    return None

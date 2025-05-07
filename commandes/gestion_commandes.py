@@ -1,19 +1,21 @@
 import csv
 import os
 from datetime import datetime
-from .gestion_stock import verifier_et_reduire_stock, produit_existe
-from .gestion_stock import verifier_et_reduire_stock, produit_existe, lire_stock  
+from .gestion_stock import verifier_et_reduire_stock, lire_stock, normaliser_nom_produit
 
 
 COMMANDES_FILE = 'commandes.csv'
 
+
 def ajouter_commande(nom, produit):
-    if not produit_existe(produit):
+    nom_produit_normalise = normaliser_nom_produit(produit)
+
+    if not nom_produit_normalise:
         print(f"❌ Le produit '{produit}' n'existe pas dans le stock.")
         return
 
-    if not verifier_et_reduire_stock(produit):
-        return  
+    if not verifier_et_reduire_stock(nom_produit_normalise):
+        return
 
     fichier_existe = os.path.exists(COMMANDES_FILE)
     with open(COMMANDES_FILE, mode='a', newline='', encoding='utf-8') as f:
@@ -21,11 +23,12 @@ def ajouter_commande(nom, produit):
         if not fichier_existe:
             writer.writerow(["Nom", "Produit", "Date"])
         date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        writer.writerow([nom, produit, date])
+        writer.writerow([nom, nom_produit_normalise, date])
 
     stock = lire_stock()
-    quantite_restante = stock.get(produit, 0)
-    print(f"✅ Commande ajoutée. Il reste {quantite_restante} unité(s) de '{produit}' en stock.")
+    quantite_restante = stock.get(nom_produit_normalise, 0)
+    print(f"✅ Commande ajoutée. Il reste {quantite_restante} unité(s) de '{nom_produit_normalise}' en stock.")
+
 
 def lister_commandes() -> None:
     if not os.path.exists(COMMANDES_FILE):
