@@ -1,28 +1,50 @@
-from commandes.gestion_stock import afficher_stock  # Ajoute cette ligne
+from commandes.gestion_stock import afficher_stock
+from commandes.gestion_commandes import ajouter_commande, lister_commandes, annuler_commande
 
-def main():
-    print("=== Order Tracker ===")
-    print("1. Ajouter une commande")
-    print("2. Lister les commandes")
-    print("3. Afficher le stock disponible")  # Ajoute cette ligne
-    choix = input("Choix (1, 2 ou 3) : ").strip()
+def menu():
+    while True:
+        print("\n=== MENU PRINCIPAL ===")
+        print("1. Voir le stock")
+        print("2. Passer une commande")
+        print("3. Voir les commandes")
+        print("0. Quitter")
 
-    if choix == '1':
-        nom = input("Nom du client : ").strip()
-        produit = input("Produit commandé : ").strip()
-        if not nom or not produit:
-            print("⚠️  Nom et produit sont obligatoires.")
-            return
-        ajouter_commande(nom, produit)
+        choix = input("Votre choix : ").strip()
 
-    elif choix == '2':
-        lister_commandes()
+        if choix == "1":
+            afficher_stock()
 
-    elif choix == '3':  
-        afficher_stock()
+        elif choix == "2":
+            nom = input("Nom du client : ").strip()
+            produit = input("Nom du produit : ").strip()
+            ajouter_commande(nom, produit)
 
-    else:
-        print("⚠️  Choix invalide. Veuillez saisir 1, 2 ou 3.")
+        elif choix == "3":
+            while True:
+                print("\n📋 Liste des commandes :")
+                lister_commandes()
+                
+                sous_choix = input("\nSouhaitez-vous annuler une commande ? (o pour oui, n pour non) : ").strip().lower()
+                if sous_choix == "n":
+                    break
+                elif sous_choix == "o":
+                    nom = input("Nom du client : ").strip()
+                    produit = input("Produit à annuler : ").strip()
+                    
+                    confirmation = input(f"⚠️ Confirmez-vous l'annulation de la commande de '{produit}' pour '{nom}' ? (o/n) : ").strip().lower()
+                    if confirmation == "o":
+                        annuler_commande(nom, produit)
+                    else:
+                        print("❌ Annulation annulée par l'utilisateur.")
+                else:
+                    print("❌ Choix invalide. Répondez par 'o' ou 'n'.")
+
+        elif choix == "0":
+            print("👋 Au revoir !")
+            break
+
+        else:
+            print("❌ Choix invalide. Veuillez réessayer.")
 
 if __name__ == "__main__":
-    main()
+    menu()
