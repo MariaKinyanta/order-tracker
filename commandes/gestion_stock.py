@@ -62,10 +62,23 @@ def afficher_stock():
 def produit_existe(produit):
     stock = charger_stock()
     return produit in stock
+
 def normaliser_nom_produit(produit):
     stock = lire_stock()
     for nom_stock in stock:
         if nom_stock.lower() == produit.lower():
-            print("Produit lowercase trouvé :", nom_stock)
             return nom_stock  
     return None
+
+def ajouter_produit(nom, quantite):
+    stock = charger_stock()
+    nom = nom.strip()
+    quantite = int(quantite)
+
+    if nom in stock:
+        stock[nom] += quantite
+    else:
+        stock[nom] = quantite
+
+    sauvegarder_stock(stock)
+    print(f"✅ Produit '{nom}' ajouté avec {quantite} unité(s).")
