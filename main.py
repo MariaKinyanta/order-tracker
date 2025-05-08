@@ -1,5 +1,11 @@
 from commandes.gestion_stock import afficher_stock
-from commandes.gestion_commandes import ajouter_commande, lister_commandes, annuler_commande
+from commandes.gestion_commandes import (
+    ajouter_commande,
+    lister_commandes,
+    annuler_commande_par_id,
+    modifier_commande_par_id,
+    charger_commandes
+)
 
 def menu():
     while True:
@@ -10,34 +16,60 @@ def menu():
         print("0. Quitter")
 
         choix = input("Votre choix : ").strip()
-
         if choix == "1":
             afficher_stock()
 
         elif choix == "2":
             nom = input("Nom du client : ").strip()
-            produit = input("Nom du produit : ").strip()
+            produit = input("Produit commandé : ").strip()
             ajouter_commande(nom, produit)
 
         elif choix == "3":
+            commandes = charger_commandes()
+            if not commandes:
+                print("⚠️  Aucune commande enregistrée : Veillez choisir un choix ci-dessous.")
+                continue
+
             while True:
                 print("\n📋 Liste des commandes :")
                 lister_commandes()
-                
-                sous_choix = input("\nSouhaitez-vous annuler une commande ? (o pour oui, n pour non) : ").strip().lower()
-                if sous_choix == "n":
+
+                print("\na) Annuler une commande ")
+                print("b) Modifier une commande ")
+                print("n) Retour au menu principal")
+                cmd = input("Choix (a/b/c) : ").strip().lower()
+
+                if cmd == "c":
                     break
-                elif sous_choix == "o":
-                    nom = input("Nom du client : ").strip()
-                    produit = input("Produit à annuler : ").strip()
-                    
-                    confirmation = input(f"⚠️ Confirmez-vous l'annulation de la commande de '{produit}' pour '{nom}' ? (o/n) : ").strip().lower()
-                    if confirmation == "o":
-                        annuler_commande(nom, produit)
+
+                elif cmd == "a":
+                    try:
+                        cid = int(input("Entrez l’ID de la commande à annuler : ").strip())
+                        annuler_commande_par_id(cid)
+                    except ValueError:
+                        print("❌ ID invalide. Veuillez entrer un nombre.")
+
+                elif cmd == "b":
+                    try:
+                        cid = int(input("Entrez l’ID de la commande à modifier : ").strip())
+                    except ValueError:
+                        print("❌ ID invalide. Veuillez entrer un nombre.")
+                        continue
+
+                    print("1) Changer le nom du client")
+                    print("2) Changer le produit")
+                    act = input("Votre choix (1/2) : ").strip()
+                    if act == "1":
+                        nn = input("Nouveau nom du client : ").strip()
+                        modifier_commande_par_id(cid, nouveau_nom=nn)
+                    elif act == "2":
+                        np = input("Nouveau produit : ").strip()
+                        modifier_commande_par_id(cid, nouveau_produit=np)
                     else:
-                        print("❌ Annulation annulée par l'utilisateur.")
+                        print("❌ Option invalide pour la modification.")
+
                 else:
-                    print("❌ Choix invalide. Répondez par 'o' ou 'n'.")
+                    print("❌ Option invalide. Répondez par 'a', 'b' ou 'c'.")
 
         elif choix == "0":
             print("👋 Au revoir !")
